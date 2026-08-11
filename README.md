@@ -33,16 +33,16 @@ reads one file per author instead of every book.
 
 Then implements the skip-gram training pipeline:
 
-- **Subsampling of frequent words** (`P_discard = 1 − √(t/f_w)`, `t ≈ 1e-5`) to
-  thin out high-frequency, low-information words.
-- **Negative sampling distribution** — sampling table weighted by
-  `f(w)^(3/4)` normalized over the vocabulary.
-- **Window / pair generation** — for each retained center word, emit one
-  `(center, context)` pair per context word inside window `k = 5` (currently
-  75,900 pairs on the retained tokens).
+- **Subsampling of frequent words** (`P_discard = 1 − √(t/f_w)`, `t ≈ 1e-5`) applied
+  per token occurrence, thinning out high-frequency, low-information words.
+- **Negative sampling distribution** — sampling table over the full vocabulary,
+  weighted by `f(w)^(3/4)` normalized (sums to 1).
+- **Window / pair generation** — per document, one `(center, context)` pair per
+  context word inside window `k = 5`; windows never cross document boundaries
+  (currently **4,942,460 pairs** on the subsampled token stream).
 
-Latest run (Tolstoy corpus only, `min_count=5`): **1,452,978 tokens**,
-**11,851 vocabulary words**.
+Latest run (both corpora, `min_count=5`, `seed=42`): **2,659,120 tokens**,
+**15,839 vocabulary words**; subsampling keeps ~494k token occurrences.
 
 ## Project layout
 
