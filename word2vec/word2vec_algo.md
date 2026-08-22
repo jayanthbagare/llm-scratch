@@ -1,7 +1,6 @@
 # Word2Vec (Skip-gram + Negative Sampling) — Implementation Reference
 
-> Status: step 1 (preprocessing + vocabulary) is implemented in
-> `word2vec/word2vec.ipynb`. Steps 2–8 are design notes for upcoming work.
+> Status: all steps (1–8) are implemented in `word2vec/word2vec.ipynb`.
 
 ## 1. Preprocessing
 - Lowercase, strip punctuation (careful with translated Russian prose — em-dashes, nested quotes).

@@ -40,9 +40,18 @@ Then implements the skip-gram training pipeline:
 - **Window / pair generation** — per document, one `(center, context)` pair per
   context word inside window `k = 5`; windows never cross document boundaries
   (currently **4,942,460 pairs** on the subsampled token stream).
+- **Model weights** — input/center embeddings `W` and output/context embeddings
+  `W'`, both `(V, N)` with `N = 128`, initialized uniformly in `±0.5/N`.
+- **Forward pass, loss & gradients** — negative-sampling loss with a stable
+  softplus objective, computed in a vectorized mini-batch update.
+- **Training loop** — negative samples drawn from the precomputed table
+  (`K = 5`), learning rate decaying linearly toward 0 over epochs.
+- **Inspection** — cosine nearest-neighbors and the `a − b + c` analogy test
+  over the trained center embeddings.
 
-Latest run (both corpora, `min_count=5`, `seed=42`): **2,659,120 tokens**,
-**15,839 vocabulary words**; subsampling keeps ~494k token occurrences.
+Latest run (both corpora, `min_count=5`, `seed=42`, 1M pairs, 5 epochs, `N=128`):
+**2,659,120 tokens**, **15,839 vocabulary words**; subsampling keeps ~494k token
+occurrences; training loss falls from ~4.16 to ~2.43.
 
 ## Project layout
 
@@ -54,7 +63,7 @@ llm-scratch/
 │   └── combined/               #   tolstoy.txt, dostoevsky.txt (one per author)
 ├── data_download.ipynb         # Gutenberg corpus download + cleaning
 ├── word2vec/
-│   ├── word2vec.ipynb          # preprocessing + vocab implementation
+│   ├── word2vec.ipynb          # preprocessing + vocab + skip-gram training
 │   └── word2vec_algo.md        # skip-gram + negative sampling reference
 └── README.md
 ```
@@ -75,7 +84,7 @@ library; the Word2Vec notebook additionally requires `numpy`.
 
 - [x] Download and clean a text corpus
 - [x] Preprocess corpus + build vocabulary (`word2vec/word2vec.ipynb`)
-- [~] Word2Vec (skip-gram): subsampling, negative sampling table, pair generation
-- [ ] Word2Vec: model weights, forward pass, training loop
+- [x] Word2Vec (skip-gram): subsampling, negative sampling table, pair generation
+- [x] Word2Vec: model weights, forward pass, training loop, evaluation
 - [ ] Attention and transformers
 - [ ] Train a language model from scratch
